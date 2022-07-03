@@ -1,4 +1,4 @@
-package io.arunp3441;
+package io.arunp.inbox;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
