@@ -58,19 +58,18 @@
         </nav>
 
         <main>
-            <div class="card" th:if="${emailList}">
-                <div class="card-header" th:text="${folderName}"></div>
-                <div class="card-body">
-                    <div class="list-group">
-                        <a th:each="email : ${emailList}" th:href="@{'/emails/'+${email.key.timeUUID}}" class="list-group-item list-group-item-action">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1" th:text="${email.subject}"></h5>
-                                <small th:text="${email.agoTimeString}"></small>
-                            </div>
-                            <p class="mb-1" th:text="${email.to}"></p>
-                        </a>
-                    </div>
-                </div>
+            <div class="card">
+                <div class="card-header">View Email</div>
+                <dl class="card-body">
+                    <dt>From</dt>
+                    <dd th:text="${email.from}"></dd>
+                    <dt>To</dt>
+                    <dd th:text="${toIDs}"></dd>
+                    <dt>Subject</dt>
+                    <dd th:text="${email.subject}"></dd>
+                    <dt>Body</dt>
+                    <dd th:text="${email.body}"></dd>
+                </dl>
             </div>
         </main>
 

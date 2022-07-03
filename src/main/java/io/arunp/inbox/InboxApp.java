@@ -1,9 +1,11 @@
 package io.arunp.inbox;
 
 import java.nio.file.Path;
-import java.util.Arrays;
+import java.util.List;
 
 import com.datastax.oss.driver.api.core.uuid.Uuids;
+import io.arunp.inbox.email.Email;
+import io.arunp.inbox.email.EmailRepository;
 import io.arunp.inbox.emailslist.EmailListItem;
 import io.arunp.inbox.emailslist.EmailListItemKey;
 import io.arunp.inbox.emailslist.EmailListItemRepository;
@@ -28,6 +30,9 @@ public class InboxApp {
 	@Autowired
 	private EmailListItemRepository emailListItemRepository;
 
+	@Autowired
+	private EmailRepository emailRepository;
+
 	public static void main(String[] args) {
 		SpringApplication.run(InboxApp.class, args);
 	}
@@ -51,10 +56,18 @@ public class InboxApp {
 
 			EmailListItem item = new EmailListItem();
 			item.setKey(key);
-			item.setTo(Arrays.asList("arunpp26"));
+			item.setTo(List.of("arunpp26","akhilp","sreepriyap"));
 			item.setSubject("Subject "+i);
 			item.setUnread(true);
 
+			Email email = new Email();
+			email.setID(key.getTimeUUID());
+			email.setSubject(item.getSubject());
+			email.setFrom("arunp3441");
+			email.setTo(item.getTo());
+			email.setBody("Body "+i);
+
+			emailRepository.save(email);
 			emailListItemRepository.save(item);
 		}
 	}
