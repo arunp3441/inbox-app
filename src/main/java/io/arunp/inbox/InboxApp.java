@@ -11,6 +11,7 @@ import io.arunp.inbox.emailslist.EmailListItemKey;
 import io.arunp.inbox.emailslist.EmailListItemRepository;
 import io.arunp.inbox.folders.Folder;
 import io.arunp.inbox.folders.FolderRepository;
+import io.arunp.inbox.folders.UnreadEmailStatsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -33,6 +34,9 @@ public class InboxApp {
 	@Autowired
 	private EmailRepository emailRepository;
 
+	@Autowired
+	private UnreadEmailStatsRepository unreadEmailStatsRepository;
+
 	public static void main(String[] args) {
 		SpringApplication.run(InboxApp.class, args);
 	}
@@ -48,6 +52,11 @@ public class InboxApp {
 		folderRepository.save(new Folder("arunp3441","Inbox","blue"));
 		folderRepository.save(new Folder("arunp3441","Sent","green"));
 		folderRepository.save(new Folder("arunp3441","Important","yellow"));
+
+		unreadEmailStatsRepository.incrementUnreadCount("arunp3441","Inbox");
+		unreadEmailStatsRepository.incrementUnreadCount("arunp3441","Inbox");
+		unreadEmailStatsRepository.incrementUnreadCount("arunp3441","Inbox");
+
 		for(int i=0; i<=10;++i){
 			EmailListItemKey key = new EmailListItemKey();
 			key.setUserId("arunp3441");
@@ -56,14 +65,14 @@ public class InboxApp {
 
 			EmailListItem item = new EmailListItem();
 			item.setKey(key);
-			item.setTo(List.of("arunpp26","akhilp","sreepriyap"));
+			item.setTo(List.of("arunp3441","akhilp","sreepriyap"));
 			item.setSubject("Subject "+i);
 			item.setUnread(true);
 
 			Email email = new Email();
 			email.setID(key.getTimeUUID());
 			email.setSubject(item.getSubject());
-			email.setFrom("arunp3441");
+			email.setFrom("arunpp26");
 			email.setTo(item.getTo());
 			email.setBody("Body "+i);
 
