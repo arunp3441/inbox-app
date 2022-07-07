@@ -2,6 +2,7 @@ package io.arunp.inbox.controllers;
 
 import io.arunp.inbox.email.Email;
 import io.arunp.inbox.email.EmailRepository;
+import io.arunp.inbox.email.EmailService;
 import io.arunp.inbox.emailslist.EmailListItem;
 import io.arunp.inbox.emailslist.EmailListItemKey;
 import io.arunp.inbox.emailslist.EmailListItemRepository;
@@ -31,6 +32,9 @@ public class EmailViewController {
 
     @Autowired
     private FolderService folderService;
+
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private EmailRepository emailRepository;
@@ -63,10 +67,11 @@ public class EmailViewController {
 
         //Check whether user is allowed to view this email
         assert userId != null;
-        if(!userId.equals(email.getFrom()) && !email.getTo().contains(userId))
+        if(!emailService.doesHaveAccess(email,userId))
             return "redirect:/";
 
         model.addAttribute("email", email);
+        model.addAttribute("id", email.getID());
         model.addAttribute("toIDs", toIDs);
 
         EmailListItemKey key = new EmailListItemKey();

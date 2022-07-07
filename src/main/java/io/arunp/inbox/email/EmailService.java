@@ -54,4 +54,19 @@ public class EmailService {
         emailListItem.setTo(to);
         return emailListItem;
     }
+
+    public boolean doesHaveAccess(Email email,String userId){
+        return (userId.equals(email.getFrom()) || email.getTo().contains(userId));
+    }
+
+    public String getReplySubject(String subject){
+        return "RE: "+subject;
+    }
+
+    public String getReplyBody(Email email){
+        return "\n\n\n------------------------------------------------------------------------\n" +
+                "From : " + email.getFrom() + "\nTo : " + email.getTo() + "\n"
+                + "Subject : " + email.getSubject() + "\n\n" + email.getBody();
+
+    }
 }

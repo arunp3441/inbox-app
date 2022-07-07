@@ -1,5 +1,7 @@
 package io.arunp.inbox.controllers;
 
+import io.arunp.inbox.email.Email;
+import io.arunp.inbox.email.EmailRepository;
 import io.arunp.inbox.email.EmailService;
 import io.arunp.inbox.folders.Folder;
 import io.arunp.inbox.folders.FolderRepository;
@@ -14,9 +16,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -31,8 +31,12 @@ public class ComposeController {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private EmailRepository emailRepository;
+
     @GetMapping(value="/compose")
-    public String getComposeMessage(@RequestParam(required = false) String to, @AuthenticationPrincipal OAuth2User principal, Model model) {
+    public String getComposeMessage(@RequestParam(required = false) String to, @RequestParam(required = false) UUID id,
+                                    @AuthenticationPrincipal OAuth2User principal, Model model) {
         if (principal == null || !StringUtils.hasText(principal.getAttribute("login")))
             return "index";
         String userId = principal.getAttribute("login");
@@ -47,6 +51,16 @@ public class ComposeController {
 
         List<String> uniqueToIds = splitIds(to);
         model.addAttribute("toIds", String.join(",", uniqueToIds));
+
+        Optional<Email> optionalEmail = emailRepository.findById(id);
+        if(optionalEmail.isPresent()){
+            Email email = optionalEmail.get();
+            assert userId != null;
+            if(emailService.doesHaveAccess(email,userId)){
+                model.addAttribute("subject" , emailService.getReplySubject(email.getSubject()));
+                model.addAttribute("body" ,emailService.getReplyBody(email));
+            }
+        }
 
         return "compose-page";
     }
