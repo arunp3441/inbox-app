@@ -60,10 +60,11 @@
 
         <main>
             <div class="card" th:if="${emailList}">
-                <div class="card-header" th:text="${folderName}"></div>
+                <div class="card-header" th:text="${folder}"></div>
                 <div class="card-body">
                     <div class="list-group">
-                        <a th:each="email : ${emailList}" th:href="@{'/emails/'+${email.key.timeUUID}}" class="list-group-item list-group-item-action">
+                        <a th:each="email : ${emailList}" th:href="@{'/emails/'+${email.key.timeUUID} + '?folder=' + ${folder}}" class="list-group-item list-group-item-action"
+                            th:classappend="${email.isUnread} ? 'list-group-item-primary'">
                             <div class="d-flex w-100 justify-content-between">
                                 <h5 class="mb-1" th:text="${email.subject}"></h5>
                                 <small th:text="${email.agoTimeString}"></small>

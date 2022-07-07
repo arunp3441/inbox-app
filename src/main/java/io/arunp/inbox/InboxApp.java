@@ -1,11 +1,13 @@
 package io.arunp.inbox;
 
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 
 import com.datastax.oss.driver.api.core.uuid.Uuids;
 import io.arunp.inbox.email.Email;
 import io.arunp.inbox.email.EmailRepository;
+import io.arunp.inbox.email.EmailService;
 import io.arunp.inbox.emailslist.EmailListItem;
 import io.arunp.inbox.emailslist.EmailListItemKey;
 import io.arunp.inbox.emailslist.EmailListItemRepository;
@@ -29,13 +31,7 @@ public class InboxApp {
 	private FolderRepository folderRepository;
 
 	@Autowired
-	private EmailListItemRepository emailListItemRepository;
-
-	@Autowired
-	private EmailRepository emailRepository;
-
-	@Autowired
-	private UnreadEmailStatsRepository unreadEmailStatsRepository;
+	private EmailService emailService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(InboxApp.class, args);
@@ -49,35 +45,13 @@ public class InboxApp {
 
 	@PostConstruct
 	public void init(){
-		folderRepository.save(new Folder("arunp3441","Inbox","blue"));
-		folderRepository.save(new Folder("arunp3441","Sent","green"));
-		folderRepository.save(new Folder("arunp3441","Important","yellow"));
+		folderRepository.save(new Folder("arunp3441","Work","blue"));
+		folderRepository.save(new Folder("arunp3441","Home","green"));
+		folderRepository.save(new Folder("arunp3441","Family","yellow"));
 
-		unreadEmailStatsRepository.incrementUnreadCount("arunp3441","Inbox");
-		unreadEmailStatsRepository.incrementUnreadCount("arunp3441","Inbox");
-		unreadEmailStatsRepository.incrementUnreadCount("arunp3441","Inbox");
-
-		for(int i=0; i<=10;++i){
-			EmailListItemKey key = new EmailListItemKey();
-			key.setUserId("arunp3441");
-			key.setLabel("Inbox");
-			key.setTimeUUID(Uuids.timeBased());
-
-			EmailListItem item = new EmailListItem();
-			item.setKey(key);
-			item.setTo(List.of("arunp3441","akhilp","sreepriyap"));
-			item.setSubject("Subject "+i);
-			item.setUnread(true);
-
-			Email email = new Email();
-			email.setID(key.getTimeUUID());
-			email.setSubject(item.getSubject());
-			email.setFrom("arunpp26");
-			email.setTo(item.getTo());
-			email.setBody("Body "+i);
-
-			emailRepository.save(email);
-			emailListItemRepository.save(item);
+		for(int i=1; i<=10;++i){
+			emailService.sendEmail("arunpp26", Arrays.asList("arunp3441","akhilp9790","sreepriyap"),
+					"Hello "+i,"Hope you are doing good");
 		}
 	}
 }

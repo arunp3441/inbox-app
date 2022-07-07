@@ -3,9 +3,7 @@ package io.arunp.inbox.controllers;
 import com.datastax.oss.driver.api.core.uuid.Uuids;
 import io.arunp.inbox.emailslist.EmailListItem;
 import io.arunp.inbox.emailslist.EmailListItemRepository;
-import io.arunp.inbox.folders.Folder;
-import io.arunp.inbox.folders.FolderRepository;
-import io.arunp.inbox.folders.FolderService;
+import io.arunp.inbox.folders.*;
 import org.ocpsoft.prettytime.PrettyTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -43,6 +41,7 @@ public class InboxController {
         model.addAttribute("userFolders" , userFolders);
         List<Folder> defaultFolders = folderService.fetchDefaultFolders(userId);
         model.addAttribute("defaultFolders" , defaultFolders);
+        model.addAttribute("stats",folderService.mapCountToLabel(userId));
 
         //Fetch emails
         if(!StringUtils.hasText(folder)){
@@ -56,7 +55,7 @@ public class InboxController {
             email.setAgoTimeString(p.format(emailDateTime));
         });
         model.addAttribute("emailList" , emailList);
-        model.addAttribute("folderName" , folder);
+        model.addAttribute("folder" , folder);
         return "inbox-page";
     }
 }
